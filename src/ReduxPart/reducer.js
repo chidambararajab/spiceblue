@@ -4,26 +4,30 @@ const initialState = {
   todos: [],
 };
 
-export default (state = initialState, action) => {
+const Reducer = (state = initialState, action) => {
   switch (action.type) {
     /**ADD TODO */
     case ADD_TODO:
-      if (!action.note.text || !action.note.date || !action.note.time) {
-        return { ...state };
-      }
-
-      const newTodos = [note, ...state.todos];
-      return { ...state.todos, note };
+      console.log(state.todos);
+      return { ...state, todos: [...state.todos, action.todo.todo] };
 
     /**REMOVE TODO */
     case REMOVE_TODO:
-      return { ...state, ...action.note };
+      console.log(state.todos);
+      return {
+        ...state,
+        todos: [...state.todos].filter((x) => x.id !== action.todo.todo.id),
+      };
 
     /**UPDATE TODO */
     case UPDATE_TODO:
-      return { ...state, ...action.note };
+      const updatedTodos = [...state.todos].map((stateTodo) =>
+        stateTodo.id === action.todo.todo.id ? action.todo.todo : stateTodo
+      );
+      return { ...state, todos: [...updatedTodos] };
 
     default:
       return state;
   }
 };
+export default Reducer;

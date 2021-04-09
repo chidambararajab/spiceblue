@@ -1,60 +1,86 @@
 import React, { useState } from "react";
 import TodoForm from "./TodoForm";
 import { Button, Card, Container, Row } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 
-const TodoLists = ({ todos, removeTodo, updateTodo }) => {
-  const [edit, setEdit] = useState({ id: null, text: "", date: "", time: "" });
+import { REMOVE_TODO } from "../ReduxPart/constant";
+import { updateTodoAction, removeTodoAction } from "../ReduxPart/action";
 
-  const submitUpdate = (value, date, time) => {
-    updateTodo(edit.id, value, date, time);
-    setEdit({
-      id: null,
-      value: "",
-      date: "",
-      time: "",
-    });
+const TodoLists = () => {
+  const [edit, setEdit] = useState({});
+
+  const todos = useSelector((state) => state.todos);
+  const dispatch = useDispatch();
+
+  const submitUpdate = ({ id, text, date, time }) => {
+    console.log(text + " ," + date + " ," + time);
+    dispatch(
+      updateTodoAction({
+        type: REMOVE_TODO,
+        todo: { id: id, text: text, date: date, time: time },
+      })
+    );
+    setEdit({});
   };
+
+  // if (edit.id) {
+  //   return <TodoForm edit={edit} onSubmit={submitUpdate} />;
+  // }
 
   return (
     <Card style={{ width: "18rem" }}>
-      {edit.id && <TodoForm edit={edit} onSubmit={submitUpdate} />}
-      <Container>
-        {todos.map((todo) => (
-          <Row key={todo.id}>
-            <Container>
-              <Row>{`Note: ${todo.text}`}</Row>
-              <Row>{`Date: ${todo.date}  Time: ${todo.time}`}</Row>
-              <Row>
-                <Button
-                  style={{
-                    backgroundColor: "gray",
-                    color: "#fff",
-                  }}
-                  onClick={() =>
-                    setEdit({
-                      id: todo.id,
-                      value: todo.text,
-                      date: todo.date,
-                      time: todo.time,
-                    })
-                  }
-                >
-                  edit
-                </Button>
-                <Button
-                  style={{
-                    backgroundColor: "red",
-                    color: "#fff",
-                  }}
-                  onClick={() => removeTodo(todo.id)}
-                >
-                  del
-                </Button>
-              </Row>
-            </Container>
-          </Row>
-        ))}
-      </Container>
+      <>
+        {todos &&
+          todos.map((todo) => (
+            <Row key={todo.id}>
+              <Container>
+                {edit.id && edit.id === todo.id ? (
+                  <TodoForm
+                    edit={edit}
+                    todoProps={todo}
+                    onSubmit={submitUpdate}
+                  />
+                ) : (
+                  <>
+                    <Row>{`Note: ${todo.text}`}</Row>
+                    <Row>{`Date: ${todo.date}  Time: ${todo.time}`}</Row>
+                    <Row>
+                      <Button
+                        style={{
+                          backgroundColor: "gray",
+                          color: "#fff",
+                        }}
+                        onClick={() =>
+                          setEdit({
+                            id: todo.id,
+                            value: todo.text,
+                            date: todo.date,
+                            time: todo.time,
+                          })
+                        }
+                      >
+                        edit
+                      </Button>
+                      <Button
+                        style={{
+                          backgroundColor: "red",
+                          color: "#fff",
+                        }}
+                        onClick={() =>
+                          dispatch(
+                            removeTodoAction({ type: REMOVE_TODO, todo: todo })
+                          )
+                        }
+                      >
+                        del
+                      </Button>
+                    </Row>
+                  </>
+                )}
+              </Container>
+            </Row>
+          ))}
+      </>
     </Card>
   );
 };

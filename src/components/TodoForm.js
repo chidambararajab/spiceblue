@@ -1,5 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { ADD_TODO } from "../ReduxPart/constant";
+
+import { addTodoAction } from "../ReduxPart/action";
 
 const TodoForm = (props) => {
   const [input, setInput] = useState("");
@@ -9,9 +13,16 @@ const TodoForm = (props) => {
   const dateRef = useRef(null);
   const timeRef = useRef(null);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     inputRef.current.focus();
-  }, []);
+    if (props.edit) {
+      setInput(props.todoProps.text);
+      setDate(props.todoProps.date);
+      setTime(props.todoProps.time);
+    }
+  }, [props.edit]);
 
   const handleTextChange = (e) => {
     setInput(e.target.value);
@@ -26,14 +37,28 @@ const TodoForm = (props) => {
   const submitHandler = (e) => {
     e.preventDefault();
 
-    props.onSubmit({
-      id: Math.floor(Math.random() * 10000),
-      text: input,
-      date: date,
-      time: time,
-    });
+    {
+      props.edit
+        ? props.onSubmit({
+            id: props.edit.id,
+            text: inputRef.current.value,
+            date: dateRef.current.defaultValue,
+            time: timeRef.current.defaultValue,
+          })
+        : dispatch(
+            addTodoAction({
+              type: ADD_TODO,
+              todo: {
+                id: Math.floor(Math.random() * 10000),
+                text: input,
+                date: date,
+                time: time,
+              },
+            })
+          );
+    }
     setInput("");
-    setDate(null);
+    setDate("0000-00-00");
     setTime(null);
   };
 
@@ -50,7 +75,7 @@ const TodoForm = (props) => {
                     <Col>
                       <Form.Control
                         style={{ width: "80%", alignItems: "center" }}
-                        defaultValue={input}
+                        value={input}
                         type="text"
                         onChange={handleTextChange}
                         ref={inputRef}
@@ -63,13 +88,17 @@ const TodoForm = (props) => {
                     <Form.Control
                       type="date"
                       defaultValue={date}
+                      value={date}
                       style={{ width: "40%", alignItems: "center" }}
+                      ref={dateRef}
                     />
 
                     <Form.Control
                       type="time"
                       defaultValue={time}
+                      value={time}
                       style={{ width: "40%", alignItems: "center" }}
+                      ref={timeRef}
                     />
                   </Row>
                   <Row>
@@ -82,7 +111,7 @@ const TodoForm = (props) => {
                       }}
                       type="submit"
                     >
-                      Add
+                      UPDATE
                     </Button>
                   </Row>
                 </Form.Group>
