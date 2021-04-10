@@ -25,18 +25,6 @@ const addTodoAction = (todo) => async (dispatch) => {
 
     console.log(data);
 
-    console.log(
-      "Added Todo: " +
-        " id: " +
-        todo.todo.id +
-        " text: " +
-        todo.todo.text +
-        " date: " +
-        todo.todo.date +
-        " time: " +
-        todo.todo.time
-    );
-
     dispatch({
       type: ADD_TODO,
       todo: todo,
