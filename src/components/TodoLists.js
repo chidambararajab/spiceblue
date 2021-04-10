@@ -23,10 +23,6 @@ const TodoLists = () => {
     setEdit({});
   };
 
-  // if (edit.id) {
-  //   return <TodoForm edit={edit} onSubmit={submitUpdate} />;
-  // }
-
   return (
     <Card style={{ width: "18rem" }}>
       <>

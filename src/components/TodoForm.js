@@ -7,11 +7,9 @@ import { addTodoAction } from "../ReduxPart/action";
 
 const TodoForm = (props) => {
   const [input, setInput] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [date, setDate] = useState("0000:00:00");
+  const [time, setTime] = useState("00:00");
   const inputRef = useRef(null);
-  const dateRef = useRef(null);
-  const timeRef = useRef(null);
 
   const dispatch = useDispatch();
 
@@ -41,9 +39,9 @@ const TodoForm = (props) => {
       props.edit
         ? props.onSubmit({
             id: props.edit.id,
-            text: inputRef.current.value,
-            date: dateRef.current.defaultValue,
-            time: timeRef.current.defaultValue,
+            text: input,
+            date: date,
+            time: time,
           })
         : dispatch(
             addTodoAction({
@@ -59,7 +57,7 @@ const TodoForm = (props) => {
     }
     setInput("");
     setDate("0000-00-00");
-    setTime(null);
+    setTime("00:00");
   };
 
   return (
@@ -67,14 +65,20 @@ const TodoForm = (props) => {
       {props.edit ? (
         <>
           <Container>
-            <Card style={{ width: "18rem", backgroundColor: "#aaaaaa" }}>
+            <Card
+              style={{
+                width: "18rem",
+                backgroundColor: "#F1F1F1",
+                padding: "30px",
+              }}
+            >
               <Card.Body>
                 <Card.Title>{"Update a note with date & tme."}</Card.Title>
                 <Form.Group>
                   <Row>
                     <Col>
                       <Form.Control
-                        style={{ width: "80%", alignItems: "center" }}
+                        style={{ width: "80.5%", alignItems: "center" }}
                         value={input}
                         type="text"
                         onChange={handleTextChange}
@@ -88,17 +92,23 @@ const TodoForm = (props) => {
                     <Form.Control
                       type="date"
                       defaultValue={date}
-                      value={date}
-                      style={{ width: "40%", alignItems: "center" }}
-                      ref={dateRef}
+                      style={{
+                        width: "40%",
+                        alignItems: "center",
+                        fontSize: "15px",
+                      }}
+                      onChange={handleDateChange}
                     />
 
                     <Form.Control
                       type="time"
                       defaultValue={time}
-                      value={time}
-                      style={{ width: "40%", alignItems: "center" }}
-                      ref={timeRef}
+                      style={{
+                        width: "40%",
+                        alignItems: "center",
+                        fontSize: "13px",
+                      }}
+                      onChange={handleTimeChange}
                     />
                   </Row>
                   <Row>
@@ -121,60 +131,68 @@ const TodoForm = (props) => {
         </>
       ) : (
         <>
-          <Card
-            style={{
-              width: "18rem",
-              backgroundColor: "#F1F1F1",
-              padding: "30px",
-            }}
-          >
-            <Card.Body>
-              <Card.Title>{"Add a note with date & tme."}</Card.Title>
-              <Form.Group>
-                <Row>
-                  <Col>
+          <Container>
+            <Card
+              style={{
+                width: "18rem",
+                backgroundColor: "#F1F1F1",
+                padding: "30px",
+              }}
+            >
+              <Card.Body>
+                <Card.Title>{"Add a note with date & tme."}</Card.Title>
+                <Form.Group>
+                  <Row>
+                    <Col>
+                      <Form.Control
+                        style={{ width: "80.5%", alignItems: "center" }}
+                        value={input}
+                        type="text"
+                        onChange={handleTextChange}
+                        ref={inputRef}
+                        name="text"
+                        placeholder="Add text"
+                      />
+                    </Col>
+                  </Row>
+                  <Row>
                     <Form.Control
-                      style={{ width: "80%", alignItems: "center" }}
-                      value={input}
-                      type="text"
-                      onChange={handleTextChange}
-                      ref={inputRef}
-                      name="text"
-                      placeholder="Add text"
+                      type="date"
+                      onChange={handleDateChange}
+                      style={{
+                        width: "40%",
+                        alignItems: "center",
+                        fontSize: "15px",
+                      }}
                     />
-                  </Col>
-                </Row>
-                <Row>
-                  <Form.Control
-                    type="date"
-                    onChange={handleDateChange}
-                    ref={dateRef}
-                    style={{ width: "40%", alignItems: "center" }}
-                  />
 
-                  <Form.Control
-                    type="time"
-                    onChange={handleTimeChange}
-                    ref={timeRef}
-                    style={{ width: "40%", alignItems: "center" }}
-                  />
-                </Row>
-                <Row>
-                  <Button
-                    style={{
-                      width: "84%",
-                      alignItems: "center",
-                      backgroundColor: "#3c5b97",
-                      color: "#fff",
-                    }}
-                    type="submit"
-                  >
-                    Add
-                  </Button>
-                </Row>
-              </Form.Group>
-            </Card.Body>
-          </Card>
+                    <Form.Control
+                      type="time"
+                      onChange={handleTimeChange}
+                      style={{
+                        width: "40%",
+                        alignItems: "center",
+                        fontSize: "13px",
+                      }}
+                    />
+                  </Row>
+                  <Row>
+                    <Button
+                      style={{
+                        width: "84%",
+                        alignItems: "center",
+                        backgroundColor: "#3c5b97",
+                        color: "#fff",
+                      }}
+                      type="submit"
+                    >
+                      Add
+                    </Button>
+                  </Row>
+                </Form.Group>
+              </Card.Body>
+            </Card>
+          </Container>
         </>
       )}
     </Form>
